@@ -151,12 +151,12 @@ def process_comment(reddit, comment=None, queue=None, original_context=None):
     #         # reversed_gif = upload_gif_host.upload(f, upload_gif_host.video_type, new_original_gif.context.nsfw)
     #
     # reversed_gif_file, upload_gif_host = ghm.get_upload_host(reversed_gif_file)
-    uploaded_gif = upload_gif_host.upload(original_gif_file.file, original_gif_file.type, original_gif_file.nsfw,
+    uploaded_gif = upload_gif_host.upload(original_gif_file.file, original_gif_file.type, new_original_gif.nsfw,
                                           original_gif_file.audio)
     if not uploaded_gif:
         reversed_gif_file, upload_gif_host = ghm.get_upload_host(reversed_gif_file, ignore=[upload_gif_host])
-        uploaded_gif = upload_gif_host.upload(reversed_gif_file.file, reversed_gif_file.type, new_original_gif.nsfw,
-                                              reversed_gif_file.audio)
+        uploaded_gif = upload_gif_host.upload(original_gif_file.file, original_gif_file.type, original_gif_file.nsfw,
+                                              original_gif_file.audio)
 
     if uploaded_gif:
         # Add gif to database
