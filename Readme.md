@@ -1,6 +1,6 @@
-# GifReversingBot
+# vredditshare
 
-Reddit bot that reverses gifs. Currently running under [/u/gifreversingbot](https://reddit.com/user/gifreversingbot).
+Reddit bot that reuploads Reddit hosted video. Currently running under [/u/vredditshare](https://reddit.com/user/vredditshare).
 
 ## Setup
 
@@ -43,7 +43,7 @@ hash = your catbox account hash
 
 ```
 
-From there run `python main.py` from the root directory to start. GifReversingBot requires Python 3.6+.
+From there run `python main.py` from the root directory to start. vredditshare requires Python 3.6+.
 
 You will also need [`FFmpeg`](http://ffmpeg.org/), [`FFprobe`](http://ffmpeg.org/), and [`gifski`](https://gif.ski/) 
 binaries on the path or in the same directory. 
@@ -59,13 +59,9 @@ not the user gave a link in the summon comment themselves. Then it looks through
 a gif in the parent comments (it will choose the one last referenced in the chain). Finally, it checks the post for a
 link. 
 
-The bot recognizes "re-reverses" (wherein someone tries to have the bot reverse it's own gif) when it encounters 
-it's own comment while searching through parent comments. When this happens, it searches up the chain a bit farther to 
-find the original link and replies with that.
-
 ### Reversing gifs/mp4s
 
-GifReversingBot uses two different reversing procedures which it chooses based on a few different circumstances. If it 
+vredditshare uses two different reversing procedures which it chooses based on a few different circumstances. If it 
 is reversing an mp4 (which is the most common gif type nowadays, go figure), it does the reversal process with FFmpeg. 
 For gifs, it exports each frame with FFmpeg and then reassembles them with gifski. Although gifski produces great gifs, 
 it's very slow and so this process is usually avoided. The bot chooses a reversal method by making an educated guess 
@@ -73,7 +69,7 @@ as to whether the source was originally a gif or an mp4.
 
 ### Gif Host Library
 
-v3 of GifReversingBot introduces the new Gif Host Library, a new implementation of the code used to describe gifs and 
+v3 of vredditshare introduces the new Gif Host Library, a new implementation of the code used to describe gifs and 
 hosting websites. It aims to share as much code as possible between the sites, reducing implementation efforts as well 
 as surface area for bugs. Hosts define several properties such as how to parse their links, upload capabilities,and 
 limits. Instead of hard coding where the bot should upload gifs for every host, it is now decided dynamically through 

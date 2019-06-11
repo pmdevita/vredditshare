@@ -27,28 +27,16 @@ def bind_db(db):
     db.generate_mapping(create_tables=True)
 
 
-# class OldGif(db.Entity):
-#     id = PrimaryKey(int, auto=True)
-#     origin_host = Required(int)
-#     origin_id = Required(str)
-#     reversed_host = Required(int)
-#     reversed_id = Required(str)
-#     time = Required(date)
-#     nsfw = Optional(bool)
-#     total_requests = Optional(int)
-#     last_requested_date = Optional(date)
-
-
-class GifHosts(db.Entity):
+class VredditHosts(db.Entity):
     name = PrimaryKey(str)
-    origin_gifs = Set('Gif', reverse='origin_host')
-    reversed_gifs = Set('Gif', reverse='reversed_host')
+    origin_gifs = Set('Vreddit', reverse='origin_host')
+    reversed_gifs = Set('Vreddit', reverse='reversed_host')
 
-class Gif(db.Entity):
+class Vreddit(db.Entity):
     id = PrimaryKey(int, auto=True)
-    origin_host = Required(GifHosts, reverse='origin_gifs')
+    origin_host = Required(VredditHosts, reverse='origin_gifs')
     origin_id = Required(str)
-    reversed_host = Required(GifHosts, reverse='reversed_gifs')
+    reversed_host = Required(VredditHosts, reverse='reversed_gifs')
     reversed_id = Required(str)
     time = Required(date)
     nsfw = Optional(bool)
@@ -64,9 +52,9 @@ def sync_hosts():
     # Double check gifhost bindings
     with db_session:
         for host in ghm.hosts:
-            q = select(h for h in GifHosts if h.name == host.name).first()
+            q = select(h for h in VredditHosts if h.name == host.name).first()
             if not q:
-                new = GifHosts(name=host.name)
+                new = VredditHosts(name=host.name)
 
 
 sync_hosts()
@@ -75,8 +63,8 @@ sync_hosts()
 def check_database(original_gif: NewGif_object):
     # Have we reversed this gif before?
     with db_session:
-        host = GifHosts[original_gif.host.name]
-        query = select(g for g in Gif if g.origin_host == host and
+        host = VredditHosts[original_gif.host.name]
+        query = select(g for g in Vreddit if g.origin_host == host and
                        g.origin_id == original_gif.id)
         gif = query.first()
         # If we have, get it's host and id
@@ -85,7 +73,7 @@ def check_database(original_gif: NewGif_object):
             id = gif.reversed_id
         # If this is not a gif we have reversed before, perhaps this is a re-reverse?
         else:
-            query = select(g for g in Gif if g.reversed_host == host and
+            query = select(g for g in Vreddit if g.reversed_host == host and
                            g.reversed_id == original_gif.id)
             gif = query.first()
             if gif:
@@ -101,15 +89,15 @@ def check_database(original_gif: NewGif_object):
 
 def add_to_database(original_gif, reversed_gif):
     with db_session:
-        new_gif = Gif(origin_host=GifHosts[original_gif.host.name], origin_id=original_gif.id,
-                         reversed_host=GifHosts[reversed_gif.host.name], reversed_id=reversed_gif.id, time=date.today(),
-                         nsfw=original_gif.nsfw, total_requests=1, last_requested_date=date.today())
+        new_gif = Vreddit(origin_host=VredditHosts[original_gif.host.name], origin_id=original_gif.id,
+                          reversed_host=VredditHosts[reversed_gif.host.name], reversed_id=reversed_gif.id, time=date.today(),
+                          nsfw=original_gif.nsfw, total_requests=1, last_requested_date=date.today())
 
 
 def delete_from_database(original_gif):
     with db_session:
         # Select gif as original first
-        query = select(g for g in Gif if g.origin_host == GifHosts[original_gif.host.name] and
+        query = select(g for g in Vreddit if g.origin_host == VredditHosts[original_gif.host.name] and
                        g.origin_id == original_gif.id)
         gif = query.first()
         # If we have it, delete it
@@ -117,7 +105,7 @@ def delete_from_database(original_gif):
             gif.delete()
         # Possibly a rereversed then
         else:
-            query = select(g for g in Gif if g.reversed_host == GifHosts[original_gif.host.name] and
+            query = select(g for g in Vreddit if g.reversed_host == VredditHosts[original_gif.host.name] and
                            g.reversed_id == original_gif.id)
             gif = query.first()
             if gif:

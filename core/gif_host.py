@@ -278,7 +278,7 @@ class RedditVid(GifHost):
         elif self.uploader == consts.GFYCAT:
             return gfycat.upload(video, consts.WEBM, nsfw=self.context.nsfw)
         elif self.uploader == consts.STREAMABLE:
-            return streamable.upload_file(video, 'GifReversingBot - {}'.format(self.get_gif().url))
+            return streamable.upload_file(video, 'vredditshare - {}'.format(self.get_gif().url))
 
     def upload_gif(self, gif):
         if self.uploader == consts.IMGUR:
@@ -312,14 +312,14 @@ class Streamable(GifHost):
             return None, None
 
     def upload_video(self, video):
-        # return streamable.upload_file(video, 'GifReversingBot - {}'.format(self.get_gif().url))
+        # return streamable.upload_file(video, 'vredditshare - {}'.format(self.get_gif().url))
 
         if self.uploader == consts.IMGUR:
             return core.hosts.imgur.imgurupload(video, consts.MP4, nsfw=self.context.nsfw)
         elif self.uploader == consts.GFYCAT:
             return gfycat.upload(video, consts.MP4, nsfw=self.context.nsfw)
         elif self.uploader == consts.STREAMABLE:
-            return streamable.upload_file(video, 'GifReversingBot - {}'.format(self.get_gif().url))
+            return streamable.upload_file(video, 'vredditshare - {}'.format(self.get_gif().url))
 
 
 

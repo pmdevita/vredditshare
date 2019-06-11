@@ -72,23 +72,23 @@ def process_comment(reddit, comment=None, queue=None, original_context=None):
     # db_gif = check_database(new_original_gif)
 
     if gif:  # db_gif
-        # If we were asked to reupload, double check the gif
-        if context.reupload:
-            print("Doing a reupload check...")
-            if not is_reupload_needed(reddit, gif):
-                # No reupload needed, do normal stuff
-                reply(context, gif)
-                print("No reupload needed")
-                return SUCCESS
-            else:
-                # Reupload is needed, delete this from the database
-                delete_from_database(gif)
-                print("Reuploadng needed")
-        # Proceed as normal
-        else:
-            # If it was in the database, reuse it
-            reply(context, gif)
-            return SUCCESS
+        # # If we were asked to reupload, double check the gif
+        # if context.reupload:
+        #     print("Doing a reupload check...")
+        #     if not is_reupload_needed(reddit, gif):
+        #         # No reupload needed, do normal stuff
+        #         reply(context, gif)
+        #         print("No reupload needed")
+        #         return SUCCESS
+        #     else:
+        #         # Reupload is needed, delete this from the database
+        #         delete_from_database(gif)
+        #         print("Reuploadng needed")
+        # # Proceed as normal
+        # else:
+        # If it was in the database, reuse it
+        reply(context, gif)
+        return SUCCESS
 
     # Analyze how the gif should be reversed
     # in_format, out_format = gif_host.analyze()
@@ -136,23 +136,23 @@ def process_comment(reddit, comment=None, queue=None, original_context=None):
     #     reversed_gif = gif_host.reverse()
 
     # Reverse it as a GIF
-    if original_gif_file.type == consts.GIF:
-        # With reversed gif
-        with reverse_gif(r, format=original_gif_file.type) as f:
-            # Give to gif_host's uploader
-            reversed_gif_file = GifFile(BytesIO(f.read()), original_gif_file.host, consts.GIF,
-                                   duration=original_gif_file.duration, frames=original_gif_file.frames)
-            # reversed_gif = upload_gif_host.upload(f, consts.GIF, new_original_gif.context.nsfw)
-    # Reverse it as a video
-    else:
-        with reverse_mp4(r, original_gif_file.audio, format=original_gif_file.type, output=upload_gif_host.video_type) as f:
-            reversed_gif_file = GifFile(BytesIO(f.read()), original_gif_file.host, upload_gif_host.video_type,
-                                   duration=original_gif_file.duration, audio=original_gif_file.audio)
-            # reversed_gif = upload_gif_host.upload(f, upload_gif_host.video_type, new_original_gif.context.nsfw)
-
-    reversed_gif_file, upload_gif_host = ghm.get_upload_host(reversed_gif_file)
-    uploaded_gif = upload_gif_host.upload(reversed_gif_file.file, reversed_gif_file.type, new_original_gif.nsfw,
-                                          reversed_gif_file.audio)
+    # if original_gif_file.type == consts.GIF:
+    #     # With reversed gif
+    #     with reverse_gif(r, format=original_gif_file.type) as f:
+    #         # Give to gif_host's uploader
+    #         reversed_gif_file = GifFile(BytesIO(f.read()), original_gif_file.host, consts.GIF,
+    #                                duration=original_gif_file.duration, frames=original_gif_file.frames)
+    #         # reversed_gif = upload_gif_host.upload(f, consts.GIF, new_original_gif.context.nsfw)
+    # # Reverse it as a video
+    # else:
+    #     with reverse_mp4(r, original_gif_file.audio, format=original_gif_file.type, output=upload_gif_host.video_type) as f:
+    #         reversed_gif_file = GifFile(BytesIO(f.read()), original_gif_file.host, upload_gif_host.video_type,
+    #                                duration=original_gif_file.duration, audio=original_gif_file.audio)
+    #         # reversed_gif = upload_gif_host.upload(f, upload_gif_host.video_type, new_original_gif.context.nsfw)
+    #
+    # reversed_gif_file, upload_gif_host = ghm.get_upload_host(reversed_gif_file)
+    uploaded_gif = upload_gif_host.upload(original_gif_file.file, original_gif_file.type, original_gif_file.nsfw,
+                                          original_gif_file.audio)
     if not uploaded_gif:
         reversed_gif_file, upload_gif_host = ghm.get_upload_host(reversed_gif_file, ignore=[upload_gif_host])
         uploaded_gif = upload_gif_host.upload(reversed_gif_file.file, reversed_gif_file.type, new_original_gif.nsfw,

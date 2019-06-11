@@ -32,7 +32,7 @@ reddit = praw.Reddit(user_agent=consts.user_agent,
                      username=credentials['reddit']['username'],
                      password=credentials['reddit']['password'])
 
-print("GifReversingBot Queue Client v{} Ctrl+C to stop".format(consts.version))
+print("vredditshare Queue Client v{} Ctrl+C to stop".format(consts.version))
 
 failure_counter = 1  # 1 by default since it is the wait timer multiplier
 
@@ -85,6 +85,6 @@ while True:
     except Exception as e:
         q.exit_queue()
         if mode == "production":
-            reddit.redditor(operator).message("GRB Client Error!", "Help I crashed!\n\n    {}".format(
+            reddit.redditor(operator).message("VRS Client Error!", "Help I crashed!\n\n    {}".format(
                 str(traceback.format_exc()).replace('\n', '\n    ')))
         raise

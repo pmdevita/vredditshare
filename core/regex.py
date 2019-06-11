@@ -50,7 +50,7 @@ class REPatterns:
 
 
 if __name__ == '__main__':
-    print(type(REPatterns.reddit_submission.search("Here is your gif!\nhttps://files.catbox.moe/ohpyy5.mp4\n\n---\n\n^(I am a bot.) [^(Report an issue)](https://www.reddit.com/message/compose/?to=pmdevita&subject=GifReversingBot%20Issue&message=Add a link to the gif or comment in your message%2C I'm not always sure which request is being reported. Thanks for helping me out!)").group()))
+    print(type(REPatterns.reddit_submission.search("Here is your gif!\nhttps://files.catbox.moe/ohpyy5.mp4\n\n---\n\n^(I am a bot.) [^(Report an issue)](https://www.reddit.com/message/compose/?to=pmdevita&subject=vredditshare%20Issue&message=Add a link to the gif or comment in your message%2C I'm not always sure which request is being reported. Thanks for helping me out!)").group()))
     r = REPatterns.reddit_submission.findall("https://www.redddit.com/r/pmdevita/comments/bn7x1a/")[0]
     print(r)
     for i in r:

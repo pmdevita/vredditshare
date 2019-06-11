@@ -31,7 +31,7 @@ def get_date(seconds):
         replace(tzinfo=datetime.timezone.utc).astimezone(tz=None)
 
 
-print("GifReversingBot Statistics v{} Ctrl+C to stop".format(consts.version))
+print("vredditshare Statistics v{} Ctrl+C to stop".format(consts.version))
 
 ghm = GifHostManager(reddit)
 counter = 0

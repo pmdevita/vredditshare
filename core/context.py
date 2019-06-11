@@ -17,7 +17,7 @@ class CommentContext:
         self.unnecessary_manual = False
         self.nsfw = is_nsfw(comment)
         self.distinguish = False
-        self.reupload = is_reupload(comment.body)
+        # self.reupload = is_reupload(comment.body)
         self.url = self.determine_target_url(reddit, self.comment)
 
     @classmethod
@@ -62,14 +62,14 @@ class CommentContext:
                     if is_nsfw_text(reddit_object.selftext) and not checking_manual:
                         self.nsfw = True
                     # Search text for URL
-                    url = self.ghm.extract_gif(reddit_object.selftext, nsfw=self.nsfw)
+                    url = self.ghm.host_names['RedditVideo'].get_gif(text=reddit_object.selftext, nsfw=self.nsfw)
                     # If found
                     if url:
                         # Return it
                         return url
                 # Else if the post is a link post, check it's URL
                 else:
-                    url = self.ghm.extract_gif(reddit_object.url, nsfw=self.nsfw)
+                    url = self.ghm.host_names['RedditVideo'].get_gif(text=reddit_object.url, nsfw=self.nsfw)
                     if url:
                         return url
                     else:
@@ -85,10 +85,10 @@ class CommentContext:
                 self.nsfw = True
             # If the comment was made by the bot, it must be a rereverse request
             # If the rereverse flag is already set, we must be at least a loop deep
-            if reddit_object.author == consts.username and not self.rereverse and not checking_manual \
-                    and not self.reupload:
-                self.rereverse = True
-                return self.determine_target_url(reddit, reddit_object.parent(), layer+1, checking_manual)
+            # if reddit_object.author == consts.username and not self.rereverse and not checking_manual \
+            #         and not self.reupload:
+            #     self.rereverse = True
+            #     return self.determine_target_url(reddit, reddit_object.parent(), layer+1, checking_manual)
             # If it's an AutoModerator summon, move our summon comment to the AutoMod's parent
             if reddit_object.author == "AutoModerator" and layer == 0:
                 self.comment = reddit_object.parent()
@@ -101,7 +101,7 @@ class CommentContext:
                     reddit_object.mod.remove()
 
             # Search text for URL
-            url = self.ghm.extract_gif(reddit_object.body, nsfw=self.nsfw)
+            url = self.ghm.host_names['RedditVideo'].get_gif(text=reddit_object.body, nsfw=self.nsfw)
             # If found
             if url:
                 # Return it

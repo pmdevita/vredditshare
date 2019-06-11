@@ -25,7 +25,7 @@ reddit = praw.Reddit(user_agent=consts.user_agent,
 
 args = parser.parse_args()
 
-print("GifReversingBot v{} Ctrl+C to stop".format(consts.version))
+print("vredditshare v{} Ctrl+C to stop".format(consts.version))
 
 mark_read = []
 failure_counter = 1  # 1 by default since it is the wait timer multiplier
@@ -74,7 +74,7 @@ while True:
                 if message.subject[:22] == 'invitation to moderate':
                     subreddit = process_mod_invite(reddit, message)
                     if subreddit:
-                        reddit.redditor(operator).message("GRB modded!", "GifReversingBot modded in r/{}!".format(subreddit))
+                        reddit.redditor(operator).message("VRS modded!", "vredditshare modded in r/{}!".format(subreddit))
                 elif message.subject in consts.ignore_messages:
                     pass
                 else:
@@ -120,6 +120,6 @@ while True:
     except Exception as e:
         reddit.inbox.mark_read(mark_read)
         if mode == "production":
-            reddit.redditor(operator).message("GRB Error!", "Help I crashed!\n\n    {}".format(
+            reddit.redditor(operator).message("VRS Error!", "Help I crashed!\n\n    {}".format(
                 str(traceback.format_exc()).replace('\n', '\n    ')))
         raise
