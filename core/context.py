@@ -6,6 +6,7 @@ from core import constants as consts
 from core.regex import REPatterns
 from core.gif import GifHostManager
 from core.hosts import GifHost
+from core.hosts.reddit import RedditVid
 from pprint import pprint
 
 class CommentContext:
@@ -64,13 +65,13 @@ class CommentContext:
                     # Search text for URL
                     url = self.ghm.host_names['RedditVideo'].get_gif(text=reddit_object.selftext, nsfw=self.nsfw)
                     # If found
-                    if url:
+                    if isinstance(url, RedditVid):
                         # Return it
                         return url
                 # Else if the post is a link post, check it's URL
                 else:
                     url = self.ghm.host_names['RedditVideo'].get_gif(text=reddit_object.url, nsfw=self.nsfw)
-                    if url:
+                    if isinstance(url, RedditVid):
                         return url
                     else:
                         return None
@@ -103,7 +104,7 @@ class CommentContext:
             # Search text for URL
             url = self.ghm.host_names['RedditVideo'].get_gif(text=reddit_object.body, nsfw=self.nsfw)
             # If found
-            if url:
+            if isinstance(url, RedditVid):
                 # Return it
                 if layer == 0:  # If this is the summon comment
                     # Double check they didn't needlessly give us the URL again
