@@ -156,6 +156,10 @@ def imgurupload(file, type, nsfw=False):
                 else:
                     print("Imgur not responding, upload failed!")
                     return Done
+        
+        if not upload['data'].get('ticket', None):
+            print("wat")
+            pprint(upload)
 
         print("received wait ticket:", upload['data']['ticket'])
 
@@ -313,6 +317,8 @@ class ImgurGif(Gif):
     def analyze(self) -> bool:
         """Analyze an imgur gif using the imgurpython library and determine how to reverse and upload"""
 
+        if not self.pic:
+            return False
         pprint(vars(self.pic))
 
         if not self.pic.animated:
@@ -343,7 +349,7 @@ class ImgurHost(GifHost):
     regex = REPatterns.imgur
     url_template = "https://imgur.com/{}.gifv"
     gif_type = ImgurGif
-    vid_len_limit = 31
+    vid_len_limit = 46
     vid_size_limit = 0
     gif_size_limit = 201
 

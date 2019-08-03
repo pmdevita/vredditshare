@@ -1,7 +1,6 @@
 from typing import Optional
 import praw.models
 from praw.const import API_PATH
-from core import parse
 from core import constants as consts
 from core.regex import REPatterns
 from core.gif import GifHostManager
@@ -92,14 +91,14 @@ class CommentContext:
             #     return self.determine_target_url(reddit, reddit_object.parent(), layer+1, checking_manual)
             # If it's an AutoModerator summon, move our summon comment to the AutoMod's parent
             if reddit_object.author == "AutoModerator" and layer == 0:
-                self.comment = reddit_object.parent()
                 # Delete comment if a moderator
                 modded_subs = [i.name for i in reddit.user.moderator_subreddits()]
                 if reddit_object.subreddit.name in modded_subs:
-                    self.determine_target_url(reddit, reddit_object.parent(), layer + 1, checking_manual)
+                    self.comment = reddit_object.parent()
                     if reddit_object.stickied:
                         self.distinguish = True
                     reddit_object.mod.remove()
+                    reddit_object = self.comment
 
             # Search text for URL
             url = self.ghm.host_names['RedditVideo'].get_gif(text=reddit_object.body, nsfw=self.nsfw)
@@ -114,33 +113,6 @@ class CommentContext:
                 return url
             # We didn't find a gif, go up a level
             return self.determine_target_url(reddit, reddit_object.parent(), layer+1, checking_manual)
-
-
-def old_find_url(text):
-    """Checks a string for valid urls"""
-    # Look through every word to see if one is a url
-    for i in text.split():
-        if parse.old_validate_url(i):
-            return i
-    # Check markdown links too
-    for i in REPatterns.link.findall(text):
-        if parse.old_validate_url(i):
-            return i
-    return None
-
-
-"""Deprecated???"""
-def extract_gif_from_comment(ghm: GifHostManager, text: str) -> Optional[GifHost]:
-    """Checks a string for valid urls"""
-    # Look through every word to see if one is a url
-    gif = ghm.extract_gif(text)
-    if gif:
-        return gif
-    # Check markdown links too
-    for i in REPatterns.link.findall(text):
-        if ghm.extract_gif(i):
-            return i
-    return None
 
 
 # Works but will mark a sfw gif first posted in an nsfw sub as nsfw ¯\_(ツ)_/¯
