@@ -115,36 +115,37 @@ def process_comment(reddit, comment=None, queue=None, original_context=None):
             continue
         else:
             cant_upload = False
+        #
+        # r = original_gif_file.file
+        # reversed_gif_file = original_gif_file.file
 
-        r = original_gif_file.file
-
-        # Reverse it as a GIF
-        if original_gif_file.type == consts.GIF:
-            # With reversed gif
-            with reverse_gif(r, format=original_gif_file.type) as f:
-                # Give to gif_host's uploader
-                reversed_gif_file = GifFile(BytesIO(f.read()), original_gif_file.host, consts.GIF,
-                                            duration=original_gif_file.duration, frames=original_gif_file.frames)
-                # reversed_gif = upload_gif_host.upload(f, consts.GIF, new_original_gif.context.nsfw)
-        # Reverse it as a video
-        else:
-            with reverse_mp4(r, original_gif_file.audio, format=original_gif_file.type,
-                             output=upload_gif_host.video_type) as f:
-                reversed_gif_file = GifFile(BytesIO(f.read()), original_gif_file.host, upload_gif_host.video_type,
-                                            duration=original_gif_file.duration, audio=original_gif_file.audio)
-                # reversed_gif = upload_gif_host.upload(f, upload_gif_host.video_type, new_original_gif.context.nsfw)
+        # # Reverse it as a GIF
+        # if original_gif_file.type == consts.GIF:
+        #     # With reversed gif
+        #     with reverse_gif(r, format=original_gif_file.type) as f:
+        #         # Give to gif_host's uploader
+        #         reversed_gif_file = GifFile(BytesIO(f.read()), original_gif_file.host, consts.GIF,
+        #                                     duration=original_gif_file.duration, frames=original_gif_file.frames)
+        #         # reversed_gif = upload_gif_host.upload(f, consts.GIF, new_original_gif.context.nsfw)
+        # # Reverse it as a video
+        # else:
+        #     with reverse_mp4(r, original_gif_file.audio, format=original_gif_file.type,
+        #                      output=upload_gif_host.video_type) as f:
+        #         reversed_gif_file = GifFile(BytesIO(f.read()), original_gif_file.host, upload_gif_host.video_type,
+        #                                     duration=original_gif_file.duration, audio=original_gif_file.audio)
+        #         # reversed_gif = upload_gif_host.upload(f, upload_gif_host.video_type, new_original_gif.context.nsfw)
 
         # Attempt a first upload
-        upload_gif_host = ghm.get_upload_host(reversed_gif_file)
-        # If there was no suitable upload host, this format cannot be uploaded
-        if not upload_gif_host:
-            cant_upload = True
-            continue
-
+        # upload_gif_host = ghm.get_upload_host(reversed_gif_file)
+        # # If there was no suitable upload host, this format cannot be uploaded
+        # if not upload_gif_host:
+        #     cant_upload = True
+        #     continue
+        reversed_gif_file = original_gif_file
         # Using the provided host, perform the upload
         for i in range(2):
             result = upload_gif_host.upload(reversed_gif_file.file, reversed_gif_file.type, new_original_gif.nsfw,
-                                                  reversed_gif_file.audio)
+                                            reversed_gif_file.audio)
             # If the host simply cannot accept this file at all
             if result == CANNOT_UPLOAD:
                 cant_upload = True
