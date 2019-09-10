@@ -10,6 +10,7 @@ from core.file import is_valid
 
 catbox_hash = CredentialsLoader.get_credentials()['catbox']['hash']
 
+
 class CatboxGif(Gif):
     process_id = True
 
@@ -21,7 +22,7 @@ class CatboxGif(Gif):
             ext = url.split(".")[-1]
             id = self.host.regex.findall(url)[0]
         if ext.lower() in [consts.MP4, consts.GIF, consts.WEBM]:
-            # We should do file checks for safety because we could actually get some kind of nasty file
+            # TODO: We should do file checks for safety because we could actually get some kind of nasty file
             return id
         return None
 
@@ -59,6 +60,7 @@ class CatboxHost(GifHost):
         m = MultipartEncoder(fields=files)
         r = requests.post("https://catbox.moe/user/api.php", data=m, headers={'Content-Type': m.content_type,
                                                                               'User-Agent': consts.user_agent})
+        print('catbox', r.status_code, r.text)
         if r.status_code == 200:
             return CatboxGif(cls, None, url=r.text)
         else:
