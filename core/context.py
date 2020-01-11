@@ -97,17 +97,10 @@ class CommentContext:
                         self.distinguish = True
                     reddit_object.mod.remove()
                     reddit_object = self.comment
+                    # Skip to the next object in the hierarchy
+                    return self.determine_target_url(reddit, reddit_object, layer+1, checking_manual)
 
-            # Search text for URL
-            # PRAW can come up with access errors, presumably because content gets deleted
-            try:
-                body = reddit_object.body
-            except AttributeError:
-                print("Comment has no text, was it deleted?")
-                # Ensure the search fails so we move to the next level
-                body = ""
-                return None
-            url = self.ghm.host_names['RedditVideo'].get_gif(text=body, nsfw=self.nsfw)
+            url = self.ghm.host_names['RedditVideo'].get_gif(text=reddit_object.body, nsfw=self.nsfw)
             # If found
             if isinstance(url, RedditVid):
                 # Return it
