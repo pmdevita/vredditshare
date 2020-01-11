@@ -2,7 +2,7 @@ import requests
 from requests_toolbelt import MultipartEncoder
 import re
 from io import BytesIO
-
+from core.gif import UPLOAD_FAILED
 from core.hosts import GifHost, Gif, GifFile
 from core.credentials import CredentialsLoader
 from core import constants as consts
@@ -64,5 +64,5 @@ class CatboxHost(GifHost):
         if r.status_code == 200:
             return CatboxGif(cls, None, url=r.text)
         else:
-            return None
+            return UPLOAD_FAILED
 

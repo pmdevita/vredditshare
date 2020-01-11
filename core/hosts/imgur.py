@@ -112,7 +112,7 @@ def imgurupload(file, type, nsfw=False):
                     continue
                 else:
                     print("Imgur not responding, upload failed!")
-                    return Done
+                    return None
             print("I have no idea what's going on")
             print(r.text)
             input()
@@ -155,11 +155,25 @@ def imgurupload(file, type, nsfw=False):
                     continue
                 else:
                     print("Imgur not responding, upload failed!")
-                    return Done
+                    return None
+            elif r.status_code == 416:
+                print("Imgur 413 Error")
+                if tries:
+                    time.sleep(sleep)
+                    sleep = sleep * 2
+                    tries -= 1
+                    continue
+                else:
+                    print("Imgur not responding, upload failed!")
+                    return None
+            else:
+                print("Imgur upload error!", r.text)
         
         if not upload['data'].get('ticket', None):
             print("wat")
             pprint(upload)
+            if upload['data']['error']['code'] == 1003: # File type invalid
+                print("Imgur says file type is invalid, how did this happen?")
 
         print("received wait ticket:", upload['data']['ticket'])
 
@@ -214,8 +228,16 @@ def imgurupload(file, type, nsfw=False):
             try:
                 ticket = r.json()
             except json.decoder.JSONDecodeError as e:
+                retry = False
                 if "Imgur is over capacity!" in r.text:
                     print("Imgur is over capacity!")
+                    retry = True
+                elif r.status_code == 400:
+                    print("Imgur returned a 400 for some reason")
+                    retry = True
+                else:
+                    print("Unknown imgur error", r.status_code)
+                if retry:
                     if tries:
                         time.sleep(sleep)
                         sleep = sleep * 2
@@ -223,7 +245,7 @@ def imgurupload(file, type, nsfw=False):
                         continue
                     else:
                         print("Imgur not responding, upload failed!")
-                        return Done
+                        return None
                 print("I have no idea what's going on")
                 print(r.text)
                 input()

@@ -27,6 +27,9 @@ class RedditVid(Gif):
             except ResponseException as e:
                 print("Video is inaccessible, likely deleted")
                 return False
+            except TypeError:
+                print("Video is unavailble, likely \"processing\"")
+                return False
 
         else:  # Maybe it was deleted?
             print("Deleted?")
