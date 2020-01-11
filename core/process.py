@@ -5,13 +5,23 @@ from core.context import CommentContext
 from core.reply import reply
 from core.gif import GifHostManager, CANNOT_UPLOAD, UPLOAD_FAILED
 from core.reverse import reverse_mp4, reverse_gif
-from core.history import check_database, add_to_database, delete_from_database
+from core.history import check_database, add_to_database, delete_from_database, check_beta
 from core import constants as consts
 from core.hosts import GifFile, Gif
 from core.constants import SUCCESS, USER_FAILURE, UPLOAD_FAILURE
 
 
 def process_comment(reddit, comment=None, queue=None, original_context=None):
+    # Should we enable beta mode?
+    if comment.author == "AutoModerator":
+        beta = check_beta(f"/r/{comment.subreddit}")
+        if beta:
+            print("Subreddit has beta mode enabled")
+    else:
+        beta = check_beta(comment.author.name)
+        if beta:
+            print("User has beta mode enabled")
+
     ghm = GifHostManager(reddit)
     if not original_context:    # If we were not provided context, make our own
         # Check if comment is deleted
@@ -62,6 +72,13 @@ def process_comment(reddit, comment=None, queue=None, original_context=None):
         # Add to queue
         print("Adding to queue...")
         queue.add_job(context.to_json(), new_original_gif)
+        return SUCCESS
+
+    # If beta, give them the beta gif
+    if beta:
+        gif = ghm.host_names['vredditcc'].get_gif(id=new_original_gif.id)
+        print(gif)
+        reply(context, gif)
         return SUCCESS
 
     # Check database for gif before we reverse it
@@ -190,6 +207,7 @@ def process_mod_invite(reddit, message):
         subreddit.mod.accept_invite()
         print("Accepted moderatership at", subreddit_name)
         return subreddit_name
+
 
 def is_reupload_needed(reddit, gif: Gif):
     if gif.id:

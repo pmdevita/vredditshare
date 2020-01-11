@@ -43,10 +43,15 @@ class Vreddit(db.Entity):
     total_requests = Optional(int)
     last_requested_date = Optional(date)
 
+class VredditBeta(db.Entity):
+    username = PrimaryKey(str)
+    opt_in = Required(bool)
+
 
 bind_db(db)
 
 ghm = GifHostManager()
+
 
 def sync_hosts():
     # Double check gifhost bindings
@@ -110,3 +115,12 @@ def delete_from_database(original_gif):
             gif = query.first()
             if gif:
                 gif.delete()
+
+
+def check_beta(username):
+    with db_session:
+        user = select(u for u in VredditBeta if u.username == username).first()
+        if user:
+            return user.opt_in
+        return False
+
