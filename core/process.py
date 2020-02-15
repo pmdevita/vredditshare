@@ -45,6 +45,10 @@ def process_comment(reddit, comment=None, queue=None, original_context=None):
     else:   # If we are the client, context is provided to us
         context = original_context
 
+    if context.beta:
+        print("User is temporarily enabling beta")
+        beta = True
+
     # Create object to grab gif from host
     # print(context.url)
     # gif_host = GifHost.open(context, reddit)

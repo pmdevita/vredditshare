@@ -12,6 +12,6 @@ class VredditCCHost(GifHost):
     url_template = "https://vreddit.cc/{}"
     gif_type = VredditCC
     can_gif = False
-    can_vid = True
+    can_vid = False
 
 

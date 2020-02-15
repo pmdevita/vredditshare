@@ -16,6 +16,7 @@ class CommentContext:
         self.rereverse = False
         self.unnecessary_manual = False
         self.nsfw = is_nsfw(comment)
+        self.beta = is_beta(comment.body)
         self.distinguish = False
         # self.reupload = is_reupload(comment.body)
         self.url = self.determine_target_url(reddit, self.comment)
@@ -145,4 +146,8 @@ def is_nsfw_text(text):
 
 def is_reupload(text):
     m = REPatterns.reupload_text.findall(text)
+    return len(m) != 0
+
+def is_beta(text):
+    m = REPatterns.beta.findall(text)
     return len(m) != 0

@@ -45,6 +45,9 @@ class REPatterns:
     # NSFW
     nsfw_text = re.compile("(nsfw)", re.I)
 
+    # beta
+    beta = re.compile("(beta)", re.I)
+
     # Reupload
     reupload_text = re.compile("(reupload|renew)", re.I)
 
