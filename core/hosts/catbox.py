@@ -2,7 +2,6 @@ import requests
 from requests_toolbelt import MultipartEncoder
 import re
 from io import BytesIO
-from core.gif import UPLOAD_FAILED
 from core.hosts import GifHost, Gif, GifFile
 from core.credentials import CredentialsLoader
 from core import constants as consts
