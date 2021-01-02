@@ -31,27 +31,30 @@ class RedditVid(Gif):
             except ResponseException as e:
                 print("Video is inaccessible, likely deleted")
                 return False
-            except TypeError:
-                print("Video is unavailble, likely \"processing\"")
-                return False
 
         else:  # Maybe it was deleted?
             print("Deleted?")
             return False
 
-
         r = requests.get(url)
         file = BytesIO(r.content)
 
-        r = requests.get("https://v.redd.it/{}/audio".format(self.id), headers=headers)
+        r = requests.get("https://v.redd.it/{}/DASH_audio.mp4".format(self.id), headers=headers)
         if r.status_code == 200:
             file = concat(file, BytesIO(r.content))
             audio = True
 
+        if not audio:
+            # Audio could be here instead
+            r = requests.get("https://v.redd.it/{}/audio".format(self.id), headers=headers)
+            if r.status_code == 200:
+                file = concat(file, BytesIO(r.content))
+                audio = True
+
         self.type = consts.MP4
         self.size = file.getbuffer().nbytes / 1000000
         self.files.append(GifFile(file, self.host, self.type, self.size, audio=audio))
-        self.files.append(GifFile(file, self.host, consts.GIF, self.size))
+        # self.files.append(GifFile(file, self.host, consts.GIF, self.size))
         return True
 
 

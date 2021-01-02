@@ -9,11 +9,6 @@ from core.hosts import Gif as NewGif
 from core.regex import REPatterns
 
 
-# Message constants
-# If a host is unable/unwilling to accept a specific gif
-CANNOT_UPLOAD = "CANNOT_UPLOAD"
-# If a host had a temporary failure/problem that inhibited the upload
-UPLOAD_FAILED = "UPLOAD_FAILED"
 
 
 class GifHostManager:
@@ -21,7 +16,7 @@ class GifHostManager:
     reddit = None
     vid_priority = []
     gif_priority = []
-    host_names = []
+    host_names = {}
 
     def __init__(self, reddit=None):
         if not self.hosts:
@@ -32,7 +27,7 @@ class GifHostManager:
                 if f[:2] != "__" and f[-3:] == ".py":
                     i = importlib.import_module("." + f[:-3], 'core.hosts')
             hosts = []
-            for host in GifHost.__subclasses__():
+            for host in self._get_all_subclasses(GifHost):
                 host.ghm = self
                 hosts.append([host, host.priority])
             GifHostManager.hosts = [i[0] for i in sorted(hosts, key=itemgetter(1))]
@@ -45,12 +40,24 @@ class GifHostManager:
                                            x.gif_size_limit == 0, x.gif_size_limit)) if i.can_gif]
             # GifHostManager.gif_priority = [i[0] for i in sorted(gif_priority, key=itemgetter(1))]
             GifHostManager.host_names = {i.name: i for i in self.hosts}
+
             # print("priority", self.hosts, self.vid_priority, self.gif_priority)
         if not self.reddit:
             GifHostManager.reddit = reddit
 
-    # def host_names(self):
-    #     return [i.name for i in self.hosts]
+    def _get_all_subclasses(self, parent_class):
+        classes = []
+        for child_class in parent_class.__subclasses__():
+            classes.append(child_class)
+        found_more = True
+        while found_more:
+            found_more = False
+            for child_class in classes:
+                for grandchild_class in child_class.__subclasses__():
+                    if grandchild_class not in classes:
+                        classes.append(grandchild_class)
+                        found_more = True
+        return classes
 
     def extract_gif(self, text, **kwargs) -> Optional[NewGif]:
         for host in self.hosts:
@@ -89,7 +96,7 @@ class GifHostManager:
                     print("Not within params of host", host, gif_file)
             if file_hosts:
                 acceptable_files.append({"file": gif_file, "hosts": file_hosts})
-        return acceptable_files if acceptable_files else None
+        return acceptable_files if acceptable_files else []
 
     def _within_host_params(self, host: GifHost, gif: NewGif, gif_file: GifFile):
         """Determine whether a GifFile is within a GifHost's limitations"""
@@ -113,7 +120,8 @@ class GifHostManager:
                 return True
         return False
 
-
+    def __getitem__(self, item):
+        return self.host_names.get(item, None)
 
 
 class Gif:

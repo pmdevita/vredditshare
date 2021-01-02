@@ -1,9 +1,10 @@
 # Manage a database of the last few months reverses and their links in order to save time
 from datetime import date
-from pony.orm import Database, PrimaryKey, Required, Optional, db_session, select, commit, Set
+from pony.orm import Database, PrimaryKey, Required, Optional, db_session, select, commit, Set, desc
 
 from core.gif import GifHostManager
 from core.hosts import Gif as NewGif_object
+from core.hosts import GifHost
 from core.credentials import CredentialsLoader
 
 db = Database()
@@ -64,8 +65,12 @@ def check_database(original_gif: NewGif_object):
     # Have we reversed this gif before?
     with db_session:
         host = VredditHosts[original_gif.host.name]
+        gif_id = original_gif.id
+        # if original_gif.host.name == "LinkGif":
+        #     if len(gif_id) > 255:
+        #         original_gif.id = original_gif.id[:255]
         query = select(g for g in Vreddit if g.origin_host == host and
-                       g.origin_id == original_gif.id)
+                       g.origin_id == gif_id)
         gif = query.first()
         # If we have, get it's host and id
         if gif:
@@ -89,6 +94,10 @@ def check_database(original_gif: NewGif_object):
 
 def add_to_database(original_gif, reversed_gif):
     with db_session:
+        # Extra checks for linkgif
+        # if original_gif.host.name == "LinkGif":
+        #     if len(original_gif.id) > 255:
+        #         original_gif.id = original_gif.id[:255]
         new_gif = Vreddit(origin_host=VredditHosts[original_gif.host.name], origin_id=original_gif.id,
                           reversed_host=VredditHosts[reversed_gif.host.name], reversed_id=reversed_gif.id, time=date.today(),
                           nsfw=original_gif.nsfw, total_requests=1, last_requested_date=date.today())
@@ -110,3 +119,13 @@ def delete_from_database(original_gif):
             gif = query.first()
             if gif:
                 gif.delete()
+
+
+def list_by_oldest_access(reversed_host: VredditHosts, cutoff):
+    with db_session:
+        query = select(g for g in Gif if g.reversed_host == VredditHosts[reversed_host.name]
+                       and g.last_requested_date < cutoff).order_by(Vreddit.last_requested_date)
+
+        print(query)
+        return query[:]
+

@@ -1,30 +1,39 @@
-import requests
 from io import BytesIO
-
+import praw.exceptions
 from core.context import CommentContext
 from core.reply import reply
-from core.gif import GifHostManager, CANNOT_UPLOAD, UPLOAD_FAILED
+from core.gif import GifHostManager
 from core.reverse import reverse_mp4, reverse_gif
 from core.history import check_database, add_to_database, delete_from_database
 from core import constants as consts
-from core.hosts import GifFile, Gif
+from core.hosts import GifFile, Gif, UploadFailed, CannotUpload
 from core.constants import SUCCESS, USER_FAILURE, UPLOAD_FAILURE
+from core.operator import Operator
 
 
 def process_comment(reddit, comment=None, queue=None, original_context=None):
     ghm = GifHostManager(reddit)
-    if not original_context:    # If we were not provided context, make our own
+    if not original_context:  # If we were not provided context, make our own
         # Check if comment is deleted
-        if not comment.author:
-            print("Comment doesn't exist????")
-            print(vars(comment))
-            return USER_FAILURE
+        try:
+            if not comment.author:
+                print("Comment doesn't exist????")
+                print(vars(comment))
+                return USER_FAILURE
+        except praw.exceptions.PRAWException as e:
+            # Operator.instance().message(str(vars(comment)) + " " + str(vars(e)), "Funny business")
+            # print(e)
+            # I expected this to be a user failure since I thought it would mean the comment is getting
+            # removed. However, it seems that this happens when the comment is too new for Reddit to
+            # return any data on it. So if we mark it as an UPLOAD_FAILURE, we should be able to return
+            # to it later and it should work then???
+            return UPLOAD_FAILURE
 
         print("New request by " + comment.author.name)
 
         # Create the comment context object
         context = CommentContext(reddit, comment, ghm)
-        if not context.url:         # Did our search return nothing?
+        if not context.url:  # Did our search return nothing?
             print("Didn't find a URL")
             return USER_FAILURE
 
@@ -32,7 +41,7 @@ def process_comment(reddit, comment=None, queue=None, original_context=None):
             reply(context, context.url)
             return SUCCESS
 
-    else:   # If we are the client, context is provided to us
+    else:  # If we are the client, context is provided to us
         context = original_context
 
     # Create object to grab gif from host
@@ -121,14 +130,15 @@ def process_comment(reddit, comment=None, queue=None, original_context=None):
         if upload_gif_host == ghm['Redgifs']:
             print("Blocked Redgifs upload")
             cant_upload = False
-            break
+            # break
+            return USER_FAILURE
 
         r = original_gif_file.file
 
-        # # Reverse it as a GIF
+        # Reverse it as a GIF
         # if original_gif_file.type == consts.GIF:
         #     # With reversed gif
-        #     f = reverse_gif(r, format=original_gif_file.type)
+        #     f = reverse_gif(original_gif_file, format=original_gif_file.type)
         #     # Give to gif_host's uploader
         #     reversed_gif_file = GifFile(f, original_gif_file.host, consts.GIF,
         #                                 duration=original_gif_file.duration, frames=original_gif_file.frames)
@@ -137,6 +147,13 @@ def process_comment(reddit, comment=None, queue=None, original_context=None):
         # else:
         #     f = reverse_mp4(r, original_gif_file.audio, format=original_gif_file.type,
         #                     output=upload_gif_host.video_type)
+        #     if isinstance(f, list):
+        #         Operator.instance().message(
+        #             "It appears the video was too big to be reversed\n\n{} from {} {}{} {}"
+        #                 .format(new_original_gif.url, comment.author, "NSFW " if context.nsfw else "", *f),
+        #             "Notification")
+        #         cant_upload = False
+        #         return USER_FAILURE
         #     reversed_gif_file = GifFile(f, original_gif_file.host, upload_gif_host.video_type,
         #                                 duration=original_gif_file.duration, audio=original_gif_file.audio)
         #     # reversed_gif = upload_gif_host.upload(f, upload_gif_host.video_type, new_original_gif.context.nsfw)
@@ -148,16 +165,17 @@ def process_comment(reddit, comment=None, queue=None, original_context=None):
         #     cant_upload = True
         #     continue
         reversed_gif_file = original_gif_file
+
         # Using the provided host, perform the upload
         for i in range(2):
             result = options[0]['hosts'][0].upload(reversed_gif_file.file, reversed_gif_file.type,
                                                    new_original_gif.nsfw, reversed_gif_file.audio)
             # If the host simply cannot accept this file at all
-            if result == CANNOT_UPLOAD:
+            if result == CannotUpload:
                 cant_upload = True
                 break
             # If the host was unable to accept the gif at this time
-            elif result == UPLOAD_FAILED:
+            elif result == UploadFailed:
                 cant_upload = False
                 continue  # Try again?
             # No error and not None, success!
@@ -193,9 +211,14 @@ def process_mod_invite(reddit, message):
     # Sanity
     if len(subreddit_name) > 2:
         subreddit = reddit.subreddit(subreddit_name)
-        subreddit.mod.accept_invite()
-        print("Accepted moderatership at", subreddit_name)
-        return subreddit_name
+        try:
+            subreddit.mod.accept_invite()
+            print("Accepted moderatership at", subreddit_name)
+            return subreddit_name
+        except praw.exceptions.APIException as e:
+            if e.error_type == "NO_INVITE_FOUND":
+                print("Got an invite from {} which was immediately revoked".format(subreddit_name))
+
 
 def is_reupload_needed(reddit, gif: Gif):
     if gif.id:

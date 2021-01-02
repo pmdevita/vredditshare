@@ -31,8 +31,8 @@ class CatboxGif(Gif):
         file = BytesIO(r.content)
         if not is_valid(file):
             return False
-        file = GifFile(file, self.host, consts.GIF)
-        self.files.append(file)
+        gif_file = GifFile(file, self.host, consts.GIF)
+        self.files.append(gif_file)
         vid_file = GifFile(file, self.host, self.id.split(".")[-1], audio=False)
         if self.id[-3:] == consts.GIF:
             self.files.append(vid_file)
@@ -50,6 +50,7 @@ class CatboxHost(GifHost):
     url_template = "https://files.catbox.moe/{}"
     vid_size_limit = 200
     gif_size_limit = 20
+    vid_len_limit = 540
 
     @classmethod
     def upload(cls, file, gif_type, nsfw, audio=False):
@@ -62,7 +63,21 @@ class CatboxHost(GifHost):
                                                                               'User-Agent': consts.user_agent})
         print('catbox', r.status_code, r.text)
         if r.status_code == 200:
+            if r.text == "Down for maintainence...":
+                return None
             return CatboxGif(cls, None, url=r.text)
         else:
             return UPLOAD_FAILED
+
+    @classmethod
+    def delete(cls, gif):
+        """Accepts a single Gif or a list of Gifs"""
+        if isinstance(gif, Gif):
+            gif = [gif]
+        print(" ".join([g.id for g in gif]))
+        r = requests.post("https://catbox.moe/user/api.php", data={'reqtype': 'deletefiles', 'userhash': catbox_hash,
+                                                                   'files': " ".join([g.id for g in gif])})
+        print(r.content)
+        return True
+
 

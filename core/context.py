@@ -8,6 +8,9 @@ from core.hosts import GifHost
 from core.hosts.reddit import RedditVid
 from pprint import pprint
 
+# TODO: Minimize API calls through refresh() https://praw.readthedocs.io/en/latest/code_overview/models/comment.html
+
+
 class CommentContext:
     def __init__(self, reddit, comment, ghm):
         """Determine the context of a summon by grabbing what comment/submission and url it is referring too"""
@@ -88,17 +91,27 @@ class CommentContext:
             #     self.rereverse = True
             #     return self.determine_target_url(reddit, reddit_object.parent(), layer+1, checking_manual)
             # If it's an AutoModerator summon, move our summon comment to the AutoMod's parent
-            if reddit_object.author == "AutoModerator" and layer == 0:
-                # Delete comment if a moderator
-                modded_subs = [i.name for i in reddit.user.moderator_subreddits()]
-                if reddit_object.subreddit.name in modded_subs:
-                    self.comment = reddit_object.parent()
-                    if reddit_object.stickied:
-                        self.distinguish = True
-                    reddit_object.mod.remove()
-                    reddit_object = self.comment
-                    # Skip to the next object in the hierarchy
-                    return self.determine_target_url(reddit, reddit_object, layer+1, checking_manual)
+            if reddit_object.author == "AutoModerator":
+                # IF this is layer 0, this is an Automoderator summon. Check if we are doing a comment replacement
+                if layer == 0:
+                    # Delete comment if a moderator
+                    modded_subs = [i.name for i in reddit.user.me().moderated()]
+                    if reddit_object.subreddit.name in modded_subs:
+                        self.comment = reddit_object.parent()
+                        if reddit_object.stickied:
+                            self.distinguish = True
+                        reddit_object.mod.remove()
+                        reddit_object = self.comment
+                        # Skip to the next object in the hierarchy
+                        return self.determine_target_url(reddit, reddit_object, layer+1, checking_manual)
+                # If we are rereversing and we encounter an AutoModerator comment that summoned us, immediately stop.
+                # It's likely a AutoModerator summon loop
+                elif self.rereverse:
+                    # If this AutoModerator comment contains a summon
+                    if REPatterns.reply_mention.findall(reddit_object.body):
+                        # Immediately stop
+                        print("Detected AutoModerator summon loop")
+                        return None
 
             url = self.ghm.host_names['RedditVideo'].get_gif(text=reddit_object.body, nsfw=self.nsfw)
             # If found

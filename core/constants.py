@@ -1,17 +1,18 @@
 from core.credentials import CredentialsLoader
 
-user_agent = "vredditshare v{} by /u/pmdevita"
+version = "3.3.2"
+user_agent = "vredditshare v{} by /u/pmdevita".format(version)
 spoof_user_agent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:62.0) Gecko/20100101 Firefox/62.0"
-imgur_spoof_cookie = CredentialsLoader.get_credentials()['imgur']['imgur_cookie']
-version = "3.1.2"
+
 sleep_time = 90
 username = CredentialsLoader.get_credentials()['reddit']['username']
+short_name = "VRS"
 
-bot_footer = "---\n\n^(I am a bot.) [^(Report an issue)]" \
-                 "(https://www.reddit.com/message/compose/?to=pmdevita&subject=vredditshare%20Issue&message=" \
-             "Add a link to the gif or comment in your message%2C I'm not always sure which request is being " \
-             "reported. Thanks for helping me out!)"
+issue_link = "https://www.reddit.com/message/compose/?to=pmdevita&subject=vredditshare%20Issue&message=" \
+             "Add a link to the gif or comment in your message%2C I%27m not always sure which request is being " \
+             "reported. Thanks for helping me out!"
 
+bot_footer = f"---\n\n^(I am a bot.) [^(Report an issue)]({issue_link})"
 
 nsfw_reply_template = "##NSFW\n\n{}\n\n" + bot_footer
 
