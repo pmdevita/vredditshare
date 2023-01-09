@@ -7,7 +7,7 @@ from vredditshare.core import constants as consts
 from vredditshare.hosts import GifFile, Gif, GifHost
 from vredditshare.core.concat import concat
 
-REDDIT_SUBMISSION = re.compile("http(?:s)?://(?:\w+?\.)?reddit.com(/r/|/user/)?(?(1)(\w{2,21}))(/comments/)?(?(3)(\w{7})(?:/[\w%\\\\-]+)?)?(?(4)/(\w{7}))?/?(\?)?(?(6)(\S+))?")
+REDDIT_SUBMISSION = re.compile("http(?:s)?://(?:\w+?\.)?reddit.com(/r/|/user/)?(?(1)(\w{2,21}))(/comments/)?(?(3)(\w{5,7})(?:/[\w%\\\\-]+)?)?(?(4)/(\w{7}))?/?(\?)?(?(6)(\S+))?")
 
 
 class RedditVid(Gif):
