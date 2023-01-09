@@ -102,3 +102,10 @@ venv.bak/
 
 # mypy
 .mypy_cache/
+
+*.exe
+*.mp4
+*.webm
+*.gif
+*.sqlite
+credentials.ini

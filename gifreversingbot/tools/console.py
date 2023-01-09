@@ -1,13 +1,12 @@
-import unittest
 import praw
 from gifreversingbot.core.credentials import CredentialsLoader
 from gifreversingbot.core import constants as consts
 from gifreversingbot.core.gif import GifHostManager
 
-"""These tests rely on comments on in my test subreddit so they'll need some work for other people to use"""
-
-
 credentials = CredentialsLoader().get_credentials()
+
+mode = credentials['general']['mode']
+operator = credentials['general']['operator']
 
 reddit = praw.Reddit(user_agent=consts.user_agent,
                      client_id=credentials['reddit']['client_id'],
@@ -15,14 +14,10 @@ reddit = praw.Reddit(user_agent=consts.user_agent,
                      username=credentials['reddit']['username'],
                      password=credentials['reddit']['password'])
 
-ghm = GifHostManager(reddit=reddit)
+ghm = GifHostManager(reddit)
 
-# Assert subset of dict is deprecated soooo....
-def extractDictAFromB(A,B):
-    return dict([(k,B[k]) for k in A.keys() if k in B.keys()])
+print(f"{consts.bot_name} Console v{consts.version}")
 
-class GHLTests(unittest.TestCase):
-    def test_reddit(self):
-        # Self posts should not end in infinite recursion
-        self.assertIsNone(ghm.extract_gif(text="https://www.reddit.com/user/GifReversingBot/comments/b44fkn/how_to_use_gifreversingbot"))
+
+
 

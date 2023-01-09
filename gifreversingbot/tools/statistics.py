@@ -1,0 +1,48 @@
+import praw
+from gifreversingbot.core.credentials import CredentialsLoader
+from gifreversingbot.core import constants as consts
+
+import json
+import datetime
+from collections import defaultdict
+from gifreversingbot.core.gif import GifHostManager
+
+credentials = CredentialsLoader().get_credentials()
+
+mode = credentials['general']['mode']
+operator = credentials['general']['operator']
+
+reddit = praw.Reddit(user_agent=consts.user_agent,
+                     client_id=credentials['reddit']['client_id'],
+                     client_secret=credentials['reddit']['client_secret'],
+                     username=credentials['reddit']['username'],
+                     password=credentials['reddit']['password'])
+
+
+def get_date(seconds):
+    return datetime.datetime.utcfromtimestamp(seconds).\
+        replace(tzinfo=datetime.timezone.utc).astimezone(tz=None)
+
+
+print("vredditshare Statistics v{} Ctrl+C to stop".format(consts.version))
+
+ghm = GifHostManager(reddit)
+counter = 0
+users = defaultdict(int)
+karma = {}
+gifs = {}
+
+for comment in reddit.user.me().comments.new(limit=None):
+    counter += 1
+    author = comment.parent().author
+    print(counter, comment.id, author, ghm.extract_gif(comment.body), get_date(comment.created_utc))
+    if author:
+        users[author.name] += 1
+    # pprint(vars(comment))
+    karma[comment.id] = comment.ups - comment.downs
+
+    # if not counter % 200:
+    #     input()
+
+with open('stats.json', 'w') as f:
+    json.dump({'users': users, 'upvotes': karma}, f)
