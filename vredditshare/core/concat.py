@@ -3,7 +3,7 @@ import os
 import json
 import platform
 from io import BytesIO
-from gifreversingbot.utils.temp_folder import TempFolder
+from vredditshare.utils.temp_folder import TempFolder
 
 if platform.system() == 'Windows':
     ffmpeg = 'ffmpeg.exe'

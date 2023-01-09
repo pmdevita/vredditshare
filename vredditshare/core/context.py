@@ -3,9 +3,9 @@ from praw.const import API_PATH
 from vredditshare.core import constants as consts
 from vredditshare.core.regex import REPatterns
 from vredditshare.core.gif import GifHostManager
-from vredditshare.core.hosts import GifHost
-from vredditshare.core.hosts.reddit import RedditVid
-from vredditshare.pprint import pprint
+from vredditshare.hosts import GifHost
+from vredditshare.hosts.reddit import RedditVid
+from pprint import pprint
 
 # TODO: Minimize API calls through refresh() https://praw.readthedocs.io/en/latest/code_overview/models/comment.html
 

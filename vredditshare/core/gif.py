@@ -22,7 +22,7 @@ class GifHostManager:
             for f in files:
                 #  __init__.py or __pycache__
                 if f[:2] != "__" and f[-3:] == ".py":
-                    i = importlib.import_module("." + f[:-3], 'gifreversingbot.hosts')
+                    i = importlib.import_module("." + f[:-3], 'vredditshare.hosts')
             hosts = []
             for host in self._get_all_subclasses(GifHost):
                 host.ghm = self
