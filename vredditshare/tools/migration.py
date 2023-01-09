@@ -1,5 +1,5 @@
 from pony.orm import db_session, select
-from vredditshare.core.history import Gif, GifHosts, OldGif
+from vredditshare.core.history import Vreddit, VredditHosts
 from vredditshare.core.gif import GifHostManager
 
 ghm = GifHostManager()
