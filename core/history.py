@@ -126,7 +126,7 @@ def delete_from_database(original_gif):
 
 def list_by_oldest_access(reversed_host: VredditHosts, cutoff):
     with db_session:
-        query = select(g for g in Gif if g.reversed_host == VredditHosts[reversed_host.name]
+        query = select(g for g in Vreddit if g.reversed_host == VredditHosts[reversed_host.name]
                        and g.last_requested_date < cutoff).order_by(Vreddit.last_requested_date)
 
         print(query)
