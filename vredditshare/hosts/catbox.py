@@ -3,10 +3,10 @@ from requests_toolbelt import MultipartEncoder
 import re
 from io import BytesIO
 
-from gifreversingbot.hosts import GifFile, Gif, GifHost
-from gifreversingbot.core.credentials import CredentialsLoader
-from gifreversingbot.core import constants as consts
-from gifreversingbot.core.file import is_valid
+from vredditshare.hosts import GifFile, Gif, GifHost
+from vredditshare.core.credentials import CredentialsLoader
+from vredditshare.core import constants as consts
+from vredditshare.core.file import is_valid
 
 catbox_hash = CredentialsLoader.get_credentials()['catbox']['hash']
 

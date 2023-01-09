@@ -1,13 +1,13 @@
 import praw.exceptions
-from gifreversingbot.core.context import CommentContext
-from gifreversingbot.core.reply import reply
-from gifreversingbot.core.gif import GifHostManager
-from gifreversingbot.core.reverse import reverse_mp4, reverse_gif
-from gifreversingbot.core.history import check_database, add_to_database, delete_from_database
-from gifreversingbot.core import constants as consts
-from gifreversingbot.hosts import CannotUpload, UploadFailed, GifFile, Gif
-from gifreversingbot.core.constants import SUCCESS, USER_FAILURE, UPLOAD_FAILURE
-from gifreversingbot.core.operator import Operator
+from vredditshare.core.context import CommentContext
+from vredditshare.core.reply import reply
+from vredditshare.core.gif import GifHostManager
+from vredditshare.core.reverse import reverse_mp4, reverse_gif
+from vredditshare.core.history import check_database, add_to_database, delete_from_database
+from vredditshare.core import constants as consts
+from vredditshare.hosts import CannotUpload, UploadFailed, GifFile, Gif
+from vredditshare.core.constants import SUCCESS, USER_FAILURE, UPLOAD_FAILURE
+from vredditshare.core.operator import Operator
 
 
 def process_comment(reddit, comment=None, queue=None, original_context=None):

@@ -3,14 +3,14 @@ import prawcore
 import time
 import traceback
 from datetime import datetime, timedelta
-from gifreversingbot.core.process import process_comment, process_mod_invite
-from gifreversingbot.core.credentials import CredentialsLoader
-from gifreversingbot.core.regex import REPatterns
-from gifreversingbot.core import constants as consts
-from gifreversingbot.core.constants import SUCCESS, USER_FAILURE, UPLOAD_FAILURE
-from gifreversingbot.core.secret import secret_process
-from gifreversingbot.core.arguments import parser
-from gifreversingbot.core.operator import Operator
+from vredditshare.core.process import process_comment, process_mod_invite
+from vredditshare.core.credentials import CredentialsLoader
+from vredditshare.core.regex import REPatterns
+from vredditshare.core import constants as consts
+from vredditshare.core.constants import SUCCESS, USER_FAILURE, UPLOAD_FAILURE
+from vredditshare.core.secret import secret_process
+from vredditshare.core.arguments import parser
+from vredditshare.core.operator import Operator
 from pony.orm.dbapiprovider import OperationalError
 
 credentials = CredentialsLoader().get_credentials()

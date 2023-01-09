@@ -1,9 +1,9 @@
 import requests
 import re
 from io import BytesIO
-from gifreversingbot.core.credentials import CredentialsLoader
-from gifreversingbot.core import constants as consts
-from gifreversingbot.hosts import GifFile, Gif, GifHost
+from vredditshare.core.credentials import CredentialsLoader
+from vredditshare.core import constants as consts
+from vredditshare.hosts import GifFile, Gif, GifHost
 
 
 class StreamableClient:

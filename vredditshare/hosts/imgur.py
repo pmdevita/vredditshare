@@ -7,10 +7,10 @@ import re
 from io import BytesIO
 from requests_toolbelt.multipart.encoder import MultipartEncoder
 
-from gifreversingbot.core.credentials import CredentialsLoader
-from gifreversingbot.core import constants as consts
-from gifreversingbot.hosts import UploadFailed, GifFile, Gif, GifHost
-from gifreversingbot.core.file import get_duration, is_valid
+from vredditshare.core.credentials import CredentialsLoader
+from vredditshare.core import constants as consts
+from vredditshare.hosts import UploadFailed, GifFile, Gif, GifHost
+from vredditshare.core.file import get_duration, is_valid
 
 
 class InvalidRefreshToken(Exception):

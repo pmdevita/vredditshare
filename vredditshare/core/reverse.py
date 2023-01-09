@@ -1,9 +1,9 @@
 import subprocess
 import os
 import platform
-from gifreversingbot.core import constants as consts
-from gifreversingbot.hosts import GifFile
-from gifreversingbot.utils.temp_folder import TempFolder
+from vredditshare.core import constants as consts
+from vredditshare.hosts import GifFile
+from vredditshare.utils.temp_folder import TempFolder
 
 
 def zeros(number, num_zeros=6):

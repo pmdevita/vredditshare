@@ -6,9 +6,9 @@ import re
 from math import ceil
 from io import BytesIO
 
-from gifreversingbot.core.credentials import CredentialsLoader
-from gifreversingbot.core import constants as consts
-from gifreversingbot.hosts import NO_NSFW, GifFile, Gif, GifHost
+from vredditshare.core.credentials import CredentialsLoader
+from vredditshare.core import constants as consts
+from vredditshare.hosts import NO_NSFW, GifFile, Gif, GifHost
 
 ENCODE_TIMEOUT = 3200
 WAIT = 8

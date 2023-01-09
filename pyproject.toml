@@ -1,7 +1,7 @@
 [tool.poetry]
-name = "gifreversingbot"
+name = "vredditshare"
 version = "3.4.0"
-description = "A Reddit bot that reverses gifs"
+description = "A Reddit bot that reuploads Reddit video"
 authors = ["Peter DeVita <mewtwo2643@yahoo.com>"]
 license = "GPL"
 readme = "README.md"
@@ -20,5 +20,5 @@ requires = ["poetry-core"]
 build-backend = "poetry.core.masonry.api"
 
 [tool.poetry.scripts]
-gifreversingbot = 'gifreversingbot.__main__:main'
-grb-prune-catbox = 'gifreversingbot.tools.prune_catbox:main'
+vredditshare = 'vredditshare.__main__:main'
+vrs-prune-catbox = 'vredditshare.tools.prune_catbox:main'

@@ -4,10 +4,10 @@ import sys
 
 import praw
 import datetime
-from gifreversingbot.core import constants as consts
-from gifreversingbot.core.credentials import CredentialsLoader
-from gifreversingbot.core.gif import GifHostManager
-from gifreversingbot.core.history import delete_from_database, list_by_oldest_access
+from vredditshare.core import constants as consts
+from vredditshare.core.credentials import CredentialsLoader
+from vredditshare.core.gif import GifHostManager
+from vredditshare.core.history import delete_from_database, list_by_oldest_access
 
 CUTOFF = datetime.date.today() - datetime.timedelta(weeks=9 * 4)
 

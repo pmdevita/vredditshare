@@ -1,11 +1,11 @@
 import os
 import requests
 from io import BytesIO
-from gifreversingbot.core import constants as consts
-from gifreversingbot.core.file import get_frames, get_duration, has_audio, MediaInfo, estimate_frames_to_pngs
+from vredditshare.core import constants as consts
+from vredditshare.core.file import get_frames, get_duration, has_audio, MediaInfo, estimate_frames_to_pngs
 from typing import TYPE_CHECKING
 if TYPE_CHECKING:
-    from gifreversingbot.core.gif import GifHostManager
+    from vredditshare.core.gif import GifHostManager
 
 NO_NSFW = 1
 NSFW_ALLOWED = 2

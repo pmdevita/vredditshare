@@ -3,8 +3,8 @@ import time
 import re
 from io import BytesIO
 
-from gifreversingbot.hosts import GifFile, Gif, GifHost, get_response_size
-from gifreversingbot.core import constants as consts
+from vredditshare.hosts import GifFile, Gif, GifHost, get_response_size
+from vredditshare.core import constants as consts
 
 
 class LinkGif(Gif):

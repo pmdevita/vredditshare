@@ -1,5 +1,5 @@
 import re
-from gifreversingbot.core import constants as consts
+from vredditshare.core import constants as consts
 
 
 class REPatterns:

@@ -4,8 +4,8 @@ from operator import itemgetter
 import os
 import importlib
 import praw
-from gifreversingbot.core import constants as consts
-from gifreversingbot.hosts import NO_NSFW, ONLY_NSFW, GifFile, Gif as NewGif, GifHost
+from vredditshare.core import constants as consts
+from vredditshare.hosts import NO_NSFW, ONLY_NSFW, GifFile, Gif as NewGif, GifHost
 
 
 class GifHostManager:

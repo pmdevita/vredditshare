@@ -1,7 +1,7 @@
 import praw
-from gifreversingbot.core.credentials import CredentialsLoader
-from gifreversingbot.core import constants as consts
-from gifreversingbot.core.gif import GifHostManager
+from vredditshare.core.credentials import CredentialsLoader
+from vredditshare.core import constants as consts
+from vredditshare.core.gif import GifHostManager
 
 credentials = CredentialsLoader().get_credentials()
 

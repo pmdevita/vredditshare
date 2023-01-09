@@ -1,4 +1,4 @@
-from gifreversingbot.core.credentials import CredentialsLoader
+from vredditshare.core.credentials import CredentialsLoader
 
 bot_name = "vredditshare"
 short_name = "VRS"

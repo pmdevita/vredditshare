@@ -1,6 +1,6 @@
-from gifreversingbot.hosts.gfycat import GfycatHost, GfycatGif, GfycatClient
-from gifreversingbot.hosts import ONLY_NSFW
-import gifreversingbot.core.constants as consts
+from vredditshare.hosts.gfycat import GfycatHost, GfycatGif, GfycatClient
+from vredditshare.hosts import ONLY_NSFW
+import vredditshare.core.constants as consts
 
 
 class RedgifsClient(GfycatClient):
