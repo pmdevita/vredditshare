@@ -6,7 +6,7 @@ import importlib
 import praw
 from vredditshare.core import constants as consts
 from vredditshare.hosts import NO_NSFW, ONLY_NSFW, GifFile, Gif as NewGif, GifHost
-from gifreversingbot.core.credentials import CredentialsLoader
+from vredditshare.core.credentials import CredentialsLoader
 
 def get_config_list(string):
     if string:
