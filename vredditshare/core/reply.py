@@ -60,8 +60,8 @@ def reply(context: CommentContext, gif):
             timeout = re.findall("(\d+) minute", e.message)
             print(e.message)
             if timeout:
-                time.sleep(int(timeout[0]) + 1)
-                return reply_message(context, gif)
+                time.sleep((int(timeout[0]) + 1) * 60)
+                return reply(context, gif)
             return False
         elif e.error_type == "THREAD_LOCKED":
             reply_message(comment, url)
