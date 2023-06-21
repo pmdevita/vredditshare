@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "vredditshare"
-version = "3.4.1"
+version = "3.4.2"
 description = "A Reddit bot that reuploads Reddit video"
 authors = ["Peter DeVita <mewtwo2643@yahoo.com>"]
 license = "GPL"
