@@ -70,8 +70,11 @@ class GifFile:
 
         self.host = host
 
-    def __del__(self):
+    def close(self):
         self.file.close()
+
+    def __del__(self):
+        self.close()
 
 
 class Gif:
